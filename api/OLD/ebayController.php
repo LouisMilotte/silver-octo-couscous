@@ -8,7 +8,6 @@ $searchQuery = $_GET["search"];
 // API request variables
 $endpoint = 'http://svcs.ebay.com/services/search/FindingService/v1';
 $version = '1.13.0';
-$appid = 'TomPalme-pretain-PRD-83882c1d0-98d8da0e';
 $globalid = 'EBAY-GB';
 $query = $searchQuery;
 $safequery = urlencode($query);

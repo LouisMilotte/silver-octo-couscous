@@ -11,6 +11,7 @@ new cc_builder("Gifticality | Wishlist", "Create a new wishlist or add some new 
 
 //Setup the people-searchey thing
 $link = mysqli_connect("localhost", "pi", "reverse", "boxx");
+
 $sql = "SELECT uniqueID, first_name, last_name FROM people;";
 $res = mysqli_query($link, $sql);
 $peopleArr = array("all" => "All");
@@ -45,8 +46,6 @@ echo $cardNav;
 
 ?>
 
-<div class="stormzy">
-
 <script>
 $(document).ready(function(){
   $('.foobar1').on('click', function(e){
@@ -57,7 +56,7 @@ $(document).ready(function(){
     console.log(search);
     $.ajax({
       type: "GET", 
-      url: '../api/wishlistControllerALT.php', 
+      url: '../api/wishlistController.php', 
       data: {personID: search}, 
       success: function(data){
         console.log(data);

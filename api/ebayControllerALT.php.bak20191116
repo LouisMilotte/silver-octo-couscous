@@ -4,7 +4,7 @@ require ("/etc/rover/neoGenesis.php");
 require ("/etc/rover/neoTable.php");
 phpWarning();
 $today = date("Y-m-d H:i:s");
-require ("/var/www/pretain/html/include/serialize.js");
+//require ("/var/www/pretain/html/include/serialize.js");
 
 $searchQuery = $_GET["search"];
 
@@ -51,7 +51,7 @@ if ($array["ack"] == "Success") {
     $itemArr[$itemID]["title"] = $item["title"];
     $itemArr[$itemID]["price"] = $item["sellingStatus"]["currentPrice"];
     $itemArr[$itemID]["link"] = $item["viewItemURL"];
-    $itemArr[$itemID]["img"] = $item["galleryURL"];
+    $itemArr[$itemID]["photo"] = $item["galleryURL"];
     $itemArr[$itemID]["category"] = $item["primaryCategory"]["categoryName"];
   }
 
@@ -78,7 +78,7 @@ foreach($itemArr as $row) {
   $ebayItemPrice = $row["price"];
   $ebayItemURL = $row["link"];
 
-  $img = '<img src="' . $row["img"] . '" alt="picture" style="height:100px;width:100px;">';
+  $img = '<img src="' . $row["photo"] . '" alt="picture" style="height:100px;width:100px;">';
   $itemTitle = '<h4>' . $row["title"] . '</h4>';
   
   $eBayLink = '<a href="' . $row["link"] . '" target="_blank">View on eBay</a>';
@@ -95,29 +95,25 @@ foreach($itemArr as $row) {
   $addItemToWishlistModal .= '<div class="modal-body">';
 
 /* ---------------------------- Begin modal form ---------------------------- */
-  $addItemToWishlistModal .= '<form id="addToWishlist" name="formName" class="addtowishlistform">';
+  $addItemToWishlistModal .= '<form id="addToWishlist" name="formName">';
+  
+  $addItemToWishlistModal .= '<img src="' . $row["photo"] . '" alt="image" style="height:100px;width:100px;"></img>';
 
-  $addItemToWishlistModal .= '<img src="' . $row["img"] .  '" alt="img" style="height:100px;width:100px;"></img>';
-  $addItemToWishlistModal .= '<input type="hidden" name="ebayItemID" value="' . $row["id"] . '"></input>';
+  $addItemToWishlistModal .= '<h5 name="formPrice">' . $ebayItemPrice . '</h4>';
+  $addItemToWishlistModal .= '<input type="hidden" name="formPrice" value="' . $ebayItemPrice . '"></input>';
 
   $addItemToWishlistModal .= '<h4 name="formTitle">' . $row["title"] . '</h4>';
-  $addItemToWishlistModal .= '<input type="hidden" name="ebayItemTitle" value="' . $row["title"] . '"></input>';
-
-  $addItemToWishlistModal .= '<h5 name="formPrice">£' . $row["price"] . '</h4>';
-  $addItemToWishlistModal .= '<input type="hidden" name="ebayItemPrice" value="' . $row["price"] . '"></input>';
-
-  $addItemToWishlistModal .= '<a href="' . $row["link"] . '">View on eBay</a>';
-  $addItemToWishlistModal .= '<input type="hidden" name="ebayItemLink" value="' . $row["link"] . '"></input>';
+  $addItemToWishlistModal .= '<input type="hidden" name="formTitle" value="' . $row["title"] . '"></input>';
   
   
-  $addItemToWishlistModal .= '<select class="form-control" name="wishlistRecipient">';
+  $addItemToWishlistModal .= '<select class="form-control" id="selectWishlist" name="formSelect">';
   
   foreach($peopleArr as $key => $value){
-    $addItemToWishlistModal .= "<option value=\"$key\">$value</option>";
+    $addItemToWishlistModal .= "<option>$value</option>";
   }
 
   $addItemToWishlistModal .= '</select>';
-  $addItemToWishlistModal .= '<button type="submit" class="btn btn-primary" id="wishlistSelect">Add</button>';
+  $addItemToWishlistModal .= '<button type="submit" class="btn btn-primary" id="wishlistSelect" name="formButton">Add</button>';
   $addItemToWishlistModal .= '</form></div>';
   $addItemToWishlistModal .= '<div class="modal-footer">';
   $addItemToWishlistModal .= '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>';
@@ -136,30 +132,21 @@ foreach($itemArr as $row) {
 $table = new neoTable($tableArr);
 echo $table->getTable();
 
-foreach($tableArr as $x){
-  echo count($x);
-}
-
 ?>
 
 <script>
 $(document).ready(function(){
-  console.log("!!!JQUERY RUNNING NOW!!!");
-  //Credit to Will Jones :)
-  $('#addToWishlist').on('submit', function(e){
-    console.log("!!!ITS HERE!!!");
+  //All credit to Will J
+  $('#modal-body').on('submit', function(e){
     e.preventDefault();
-    var data = $('.addtowishlistform').serialize()
     $.ajax({
-      type: "POST",
+      type: "GET",
       url: "../api/addToList.php",
       data: data, 
       success: function(data){
-        console.log("Success");
-        $(".modal-body").append(data);
-      },
-      error:function(data){
-        console.log("fucked it mate.")
+        console.log("Here is the data")
+        console.log(data);
+        //$('#modal-body').html(data)
       }
     })
   });
